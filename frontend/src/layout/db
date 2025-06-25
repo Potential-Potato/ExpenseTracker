@@ -2,13 +2,12 @@ import React from "react";
 import Card from "../components/card";
 import History from "../components/history";
 import Bar from "../components/bar";
-import { div } from "@tensorflow/tfjs-core";
 
 const Dashboard = () => {
   return (
-    <div className="">
-      <section className="flex flex-wrap gap-8 p-6 rounded-2xl">
-        <div className="mr-8  ">
+    <div className="px-10 mt-[6rem] md:mt-[1rem]">
+      <section className="flex flex-wrap gap-8 p-6 rounded-2xl justify-center debug">
+        <div className="debug1">
           <h1 className="text-xl font-semibold mb-2">Budget</h1>
           <p className="text-3xl font-bold">Php 1154.00</p>
           <p className="text-sm text-gray-500">Available / 2024</p>
@@ -16,12 +15,25 @@ const Dashboard = () => {
         <Card title="Food" amount="Php 5000.00/??" />
         <Card title="Travel" amount="Php 5000.00/??" />
         <Card title="Clothes" amount="Php 5000.00/??" />
-        <Card title="Bills" amount="Php 5000.00/??" />
       </section>
 
       <section className="flex justify-between items-center">
         <h2 className="text-xl font-bold mb-2 ">Expenses</h2>
         <button className="bg-slate-10 shadow-md">See All</button>
+      </section>
+
+      <section className="flex flex-1 flex-wrap mt-8">
+        <Bar />
+        <div className="flex flex-1 flex-col bg-white debug1">
+          <div className="flex justify-between items-center px-4 w-[30rem] ">
+            <div className="flex flex-1 px-4 justify-between">
+              <p>Title</p>
+              <p>Amount</p>
+              <p>Date</p>
+              <p>Budget</p>
+            </div>
+          </div>
+        </div>
       </section>
     </div>
   );
