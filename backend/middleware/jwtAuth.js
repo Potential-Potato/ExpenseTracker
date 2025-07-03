@@ -17,7 +17,7 @@ const jwtAuth = async (req, res, next) => {
     );
 
     if (userResult.rows.length === 0) {
-      return res.json({ error: "user does not exist!" });
+      return res.json({ error: "user does not exist!" }).status(401);
     }
 
     const user = userResult.rows[0];

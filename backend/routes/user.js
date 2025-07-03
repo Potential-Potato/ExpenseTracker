@@ -51,7 +51,7 @@ router.post("/login", async (req, res) => {
     );
 
     if (userResult.rows.length === 0) {
-      return res.json({ error: "User does not exist!" });
+      return res.status(401).json({ error: "User does not exist!!" });
     }
 
     const user = userResult.rows[0];
@@ -76,4 +76,9 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/logout", (req, res) => {
+  res
+    .clearCookie("jwtToken", { httpOnly: true, secure: true, sameSite: "None" })
+    .json({ message: "Logged out successfully" });
+});
 module.exports = router;

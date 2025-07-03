@@ -1,5 +1,9 @@
 import { Outlet, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useUser } from "../context/UserContext";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import dashboard from "../assets/dashboard.png";
 import wallet from "../assets/wallet.png";
@@ -9,11 +13,31 @@ import DropdownPfp from "../components/dropdownPfp";
 
 export default function Layout() {
   const [isOpen, setIsOpen] = useState(true);
+  const { user, setUser } = useUser();
+  const navigate = useNavigate();
 
   const toggleBurger = () => {
     setIsOpen(!isOpen);
     console.log("hi");
   };
+
+  // Fetch user from backend using jwtToken from httpOnly cookie
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get("/"); // uses baseURL from App.jsx
+        console.log("response data: ", res.data);
+        setUser(res.data);
+        toast.success("Login Sucessful!");
+      } catch (err) {
+        console.log("err: ", err.response.data);
+        toast.error("User not authorize!");
+        navigate("/login");
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return (
     <div className="w-screen h-screen bg-gray-100">

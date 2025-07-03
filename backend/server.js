@@ -14,19 +14,19 @@ const budgetRoutes = require("./routes/budget");
 
 app.use(express.json());
 app.use(cookieParser());
-// app.use(
-//   cors({
-//     origin:
-//       process.env.NODE_ENV === "production"
-//         ? "https://todo-list-a4fs.onrender.com"
-//         : "http://localhost:5173",
-//     credentials: true,
-//     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
-//   })
-// );
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://todo-list-a4fs.onrender.com"
+        : "http://localhost:5173",
+    credentials: true,
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+  })
+);
 
 //option 1: allow all origin
-app.use(cors());
+// app.use(cors());
 
 app.use("/users", userRoutes);
 app.use("/transactions", jwtAuth, transacRoutes);

@@ -2,12 +2,15 @@ const router = require("express").Router();
 const pool = require("../db/db");
 
 // route: "/transactions"
-
 router.get("/", async (req, res) => {
   try {
     const user = req.user;
     const result = await pool.query(
-      "SELECT * FROM transactions WHERE user_id = $1 ORDER BY date ASC",
+      `SELECT transactions.*, categories.name AS category_name
+       FROM transactions
+       JOIN categories ON transactions.category_id = categories.category_id
+       WHERE transactions.user_id = $1
+       ORDER BY transactions.date ASC`,
       [user.user_id]
     );
     res.json(result.rows);
