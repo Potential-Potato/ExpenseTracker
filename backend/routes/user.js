@@ -18,15 +18,16 @@ router.get("/", async (req, res) => {
 
 router.post("/register", async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, email, password } = req.body;
 
     const hashedPassword = await hashPassword(password);
     const newUser = await pool.query(
-      "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *",
-      [username, hashedPassword]
+      "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *",
+      [username, email, hashedPassword]
     );
 
-    const token = jwt.sign({ id: newUser.user_id }, process.env.JWT_SECRET);
+    const user = newUser.rows[0];
+    const token = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET);
     res
       .cookie("jwtToken", token, {
         httpOnly: true,
@@ -35,7 +36,7 @@ router.post("/register", async (req, res) => {
         maxAge: 3600000, // 1 hour
       })
       .status(200)
-      .json({ message: "User created sucessfully!" });
+      .json({ message: "Login Successful!" });
   } catch (err) {
     console.error("err msg:", err.message);
     res.status(500).send("Router-users: server error");
