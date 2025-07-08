@@ -11,6 +11,8 @@ const Expenses = () => {
   const { user } = useUser();
   const queryClient = useQueryClient();
 
+  const [activeCard, setActiveCard] = useState(null);
+  const [editingData, setEditingData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
@@ -28,6 +30,17 @@ const Expenses = () => {
     const res = await axios.post("/transactions/add", payload);
     return res.data;
   };
+
+  const deleteTransaction = useMutation({
+    mutationFn: async (id) => await axios.delete(`/transactions/delete/${id}`),
+    onSuccess: () => queryClient.invalidateQueries(["transactions"]),
+  });
+
+  const editTransaction = useMutation({
+    mutationFn: async ({ id, payload }) =>
+      await axios.patch(`/transactions/edit/${id}`, payload),
+    onSuccess: () => queryClient.invalidateQueries(["transactions"]),
+  });
 
   const mutation = useMutation({
     mutationFn: addTransaction,
@@ -71,6 +84,17 @@ const Expenses = () => {
                 day: "numeric",
               })}
               status={t.status}
+              isActive={activeCard === t.transaction_id}
+              onClick={() =>
+                setActiveCard(
+                  activeCard === t.transaction_id ? null : t.transaction_id
+                )
+              }
+              onDelete={() => deleteTransaction.mutate(t.transaction_id)}
+              onEdit={() => {
+                setEditingData(t);
+                setIsModalOpen(true);
+              }}
             />
           ))
         )}
@@ -87,7 +111,21 @@ const Expenses = () => {
               onSubmit={(e) => {
                 e.preventDefault();
                 const formData = new FormData(e.target);
-                mutation.mutate(formData);
+
+                setEditingData(null);
+
+                if (editingData) {
+                  const payload = Object.fromEntries(formData.entries());
+                  editTransaction.mutate({
+                    id: editingData.transaction_id,
+                    payload,
+                  });
+                } else {
+                  mutation.mutate(formData);
+                }
+
+                toggleModal();
+                setEditingData(null);
               }}
             >
               {/* Example: dropdown you handle separately */}
@@ -95,6 +133,7 @@ const Expenses = () => {
                 name="categoryId"
                 className="border border-gray-300 rounded-md px-4 py-2"
                 required
+                defaultValue={editingData?.categoryId || ""}
               >
                 <option value="">Select Category</option>
                 <option value="8">Work</option>
@@ -108,6 +147,7 @@ const Expenses = () => {
                 type="number"
                 placeholder="Amount"
                 className="border border-gray-300 rounded-md px-4 py-2"
+                defaultValue={editingData?.amount || ""}
                 required
               />
 
@@ -115,6 +155,7 @@ const Expenses = () => {
                 name="type"
                 className="border border-gray-300 rounded-md px-4 py-2"
                 required
+                defaultValue={editingData?.type || ""}
               >
                 <option value="">Select Type</option>
                 <option value="expense">Expense</option>
@@ -124,6 +165,7 @@ const Expenses = () => {
               <input
                 name="description"
                 placeholder="Description"
+                defaultValue={editingData?.description || ""}
                 className="border border-gray-300 rounded-md px-4 py-2"
                 required
               />
@@ -132,12 +174,14 @@ const Expenses = () => {
                 name="date"
                 type="date"
                 className="border border-gray-300 rounded-md px-4 py-2"
+                defaultValue={editingData?.date || ""}
                 required
               />
 
               <select
                 name="status"
                 className="border border-gray-300 rounded-md px-4 py-2"
+                defaultValue={editingData?.status || ""}
                 required
               >
                 <option value="">Select Status</option>
@@ -148,7 +192,10 @@ const Expenses = () => {
               <div className="flex justify-end gap-4">
                 <button
                   type="button"
-                  onClick={toggleModal}
+                  onClick={() => {
+                    toggleModal();
+                    setEditingData(null);
+                  }}
                   className="px-4 py-2 rounded-md bg-gray-200"
                 >
                   Cancel

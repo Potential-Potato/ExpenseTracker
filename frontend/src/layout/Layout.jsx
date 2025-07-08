@@ -28,7 +28,7 @@ export default function Layout() {
         const res = await axios.get("/"); // uses baseURL from App.jsx
         console.log("response data: ", res.data);
         setUser(res.data);
-        toast.success("Login Sucessful!");
+        toast.success("Authorize!");
       } catch (err) {
         console.log("err: ", err.response.data);
         toast.error("User not authorize!");
@@ -58,7 +58,7 @@ export default function Layout() {
 
         <div className="flex flex-1">
           {isOpen && (
-            <aside className="bg-white p-2 gap-3 w-56 flex-shrink-0 md:relative md:flex md:w-56 md:gap-3 top-0 left-0 h-full flex-col fixed">
+            <aside className="bg-white p-2 gap-3 w-56 flex-shrink-0 md:relative md:flex md:w-56 md:gap-3 top-0 left-0 h-full flex-col fixed z-10">
               <div className="visible md:hidden mb-2">
                 <button
                   onClick={toggleBurger}

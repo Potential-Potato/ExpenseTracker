@@ -4,7 +4,6 @@ const pool = require("../db/db");
 const jwtAuth = async (req, res, next) => {
   try {
     const token = req.cookies.jwtToken;
-    console.log("token: ", token);
 
     if (!token) {
       return res.status(404).json({ error: "No token found!" });
