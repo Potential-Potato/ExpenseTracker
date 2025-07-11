@@ -25,7 +25,6 @@ endDate DATE NOT NULL
 CREATE TABLE transactions(
 transaction_id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
-name VARCHAR(255) NOT NULL,
 category_id INTEGER REFERENCES categories(category_id) ON DELETE CASCADE,
 amount DECIMAL(10, 2) NOT NULL,
 type VARCHAR(50) CHECK (type IN ('income', 'expense')) NOT NULL,

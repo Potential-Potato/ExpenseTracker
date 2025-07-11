@@ -19,7 +19,7 @@ const Dashboard = () => {
         <Card title="Bills" amount="Php 5000.00/??" />
       </section>
 
-      <section className="flex justify-between items-center">
+      <section className="flex justify-between items-center pl-6">
         <h2 className="text-xl font-bold mb-2 ">Expenses</h2>
         <button className="bg-slate-10 shadow-md">See All</button>
       </section>

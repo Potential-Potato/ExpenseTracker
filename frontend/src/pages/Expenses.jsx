@@ -9,6 +9,7 @@ import ExpenseModal from "../components/modals/ExpenseModal";
 
 const Expenses = () => {
   const { user } = useUser();
+  const [dateFilter, setDateFilter] = useState({});
   const {
     data,
     isLoading,
@@ -16,10 +17,11 @@ const Expenses = () => {
     addTransaction,
     editTransaction,
     deleteTransaction,
-  } = useTransactions();
+  } = useTransactions(dateFilter);
 
   const [activeCard, setActiveCard] = useState(null);
   const [editingData, setEditingData] = useState(null);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSave = (formData) => {
@@ -36,7 +38,7 @@ const Expenses = () => {
     <div>
       <section className="flex flex-wrap gap-12 justify-between mb-8">
         <div className="flex flex-wrap gap-12">
-          <ButtonDate />
+          <ButtonDate onChange={setDateFilter} />
           <ButtonSelect />
         </div>
         <button

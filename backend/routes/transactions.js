@@ -4,15 +4,38 @@ const pool = require("../db/db");
 // route: "/transactions"
 router.get("/", async (req, res) => {
   try {
+    const { month, year } = req.query;
     const user = req.user;
-    const result = await pool.query(
-      `SELECT transactions.*, categories.name AS category_name
+
+    let query = `SELECT transactions.*, 
+       categories.name AS category_name 
        FROM transactions
        JOIN categories ON transactions.category_id = categories.category_id
-       WHERE transactions.user_id = $1
-       ORDER BY transactions.date ASC`,
-      [user.user_id]
-    );
+       WHERE transactions.user_id = $1`;
+
+    // SELECT transactions.*, categories.name AS category_name = prevents ovveride
+    const values = [user.user_id];
+    let paramIndex = 2;
+
+    if (month && year) {
+      query += ` AND EXTRACT(MONTH FROM transactions.date) = $${paramIndex}`;
+      values.push(month);
+      paramIndex++;
+
+      query += ` AND EXTRACT(YEAR FROM transactions.date) = $${paramIndex}`;
+      values.push(year);
+      paramIndex++;
+    }
+
+    if (req.query.category_id) {
+      query += ` AND transactions.category_id = $${paramIndex}`;
+      values.push(req.query.category_id);
+      paramIndex++;
+    }
+
+    query += ` ORDER BY transactions.date ASC`;
+
+    const result = await pool.query(query, values);
     res.json(result.rows);
   } catch (err) {
     console.error(err.message);

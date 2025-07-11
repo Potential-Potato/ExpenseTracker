@@ -3,14 +3,14 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { defaultError } from "../utils/defaultError";
 
-export const useTransactions = () => {
+export const useTransactions = (filters = {}) => {
   const queryClient = useQueryClient();
 
   // fetch
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["transactions"],
+    queryKey: ["transactions", filters],
     queryFn: async () => {
-      const res = await axios.get("/transactions");
+      const res = await axios.get("/transactions", { params: filters });
       return res.data;
     },
   });

@@ -20,7 +20,7 @@ const ExpenseModal = ({ isOpen, onClose, onSave, editingData }) => {
             name="categoryId"
             required
             className="border border-gray-300 rounded-md px-4 py-2"
-            defaultValue={editingData?.categoryId || ""}
+            defaultValue={editingData?.category_id || ""}
           >
             <option value="">Select Category</option>
             <option value="8">Work</option>
@@ -61,7 +61,9 @@ const ExpenseModal = ({ isOpen, onClose, onSave, editingData }) => {
             name="date"
             type="date"
             className="border border-gray-300 rounded-md px-4 py-2"
-            defaultValue={editingData?.date || ""}
+            defaultValue={
+              editingData?.date ? editingData.date.split("T")[0] : ""
+            }
             required
           />
 
@@ -93,12 +95,12 @@ const ExpenseModal = ({ isOpen, onClose, onSave, editingData }) => {
           </div>
         </form>
 
-        <button
+        {/* <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
         >
           &times;
-        </button>
+        </button> */}
       </div>
     </div>
   );
