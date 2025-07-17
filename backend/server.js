@@ -6,11 +6,11 @@ const jwtAuth = require("./middleware/jwtAuth");
 const PORT = process.env.PORT;
 const app = express();
 
-const userRoutes = require("./routes/user");
+const userRoutes = require("./routes/users");
 const indexRoutes = require("./routes/index");
 const transacRoutes = require("./routes/transactions");
 const categoryRoutes = require("./routes/categories");
-const budgetRoutes = require("./routes/budget");
+const budgetRoutes = require("./routes/budgets");
 
 app.use(express.json());
 app.use(cookieParser());

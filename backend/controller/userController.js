@@ -1,12 +1,8 @@
-const express = require("express");
-const router = express.Router();
-const jwt = require("jsonwebtoken");
 const pool = require("../db/db");
+const jwt = require("jsonwebtoken");
 const { hashPassword, comparePassword } = require("../utils/bcrypt");
 
-// route: "/users"
-
-router.get("/", async (req, res) => {
+const getAllUser = async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM users ORDER BY user_id ASC");
     res.json(result.rows);
@@ -14,9 +10,9 @@ router.get("/", async (req, res) => {
     console.error(err.message);
     res.status(500).send("Router-users: server error");
   }
-});
+};
 
-router.post("/register", async (req, res) => {
+const registerUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
@@ -41,9 +37,9 @@ router.post("/register", async (req, res) => {
     console.error("err msg:", err.message);
     res.status(500).send("Router-users: server error");
   }
-});
+};
 
-router.post("/login", async (req, res) => {
+const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
     const userResult = await pool.query(
@@ -75,11 +71,17 @@ router.post("/login", async (req, res) => {
     console.error("err msg:", err.message);
     res.status(500).send("Router-users: server error");
   }
-});
+};
 
-router.get("/logout", (req, res) => {
+const logOut = async (req, res) => {
   res
     .clearCookie("jwtToken", { httpOnly: true, secure: true, sameSite: "None" })
     .json({ message: "Logged out successfully" });
-});
-module.exports = router;
+};
+
+module.exports = {
+  getAllUser,
+  registerUser,
+  loginUser,
+  logOut,
+};
